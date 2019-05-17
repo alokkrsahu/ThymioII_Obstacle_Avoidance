@@ -1,0 +1,300 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="1" name="thymio-II">######################################################
+#  ARTIFICIAL LIFE WITH ROBOTICS 								#
+#  THYMIO COURSEWORK 2												#
+#	NAME:	ALOK KUMAR SAHU  										#
+#  SRN: 17075287														#
+######################################################
+
+
+
+######################################################
+###	 		BEHAVIOURS OF ROBOT								  ##
+######################################################
+
+var WANDER = 1		
+var TURNING = 2
+var NEAREST = 0
+var STOP = 0
+var state = WANDER  # DEFAULT STATE
+
+######################################################
+#				VARIABLES DECLARATION								#
+######################################################
+var SPEED = 500
+var THRESHOLD = 99				# GROUND SENSOR VALUEA(DETECT BLACK LINE)
+var TURN_AMOUNT = 1192			# TIMER VALUE TIME PERIOD TURN THE ROBOT
+var SEARCH_DISTANCE = 2000	# SET SEARCH TIME FOR ROBOT
+var SEARCH_ANGLE = 30			# LEFT OR RIGHT TURNING TIME PERIOD
+var MAX_VIEW = 121				# MAX DISTANCE THAT CAN BE SEEN
+var NEARVIEW = 1997				# NEARVIEW REGION
+var PERSPACE = 4013				# PERSPACE REGION
+var i = 0							# A VARIABLE TO GENERATE RANDOM NUMBER
+######################################################
+#				VARIABLES DECLARATION	ENDS HERE				#
+######################################################
+
+
+
+timer.period[0]=0				# INITIALIZE TIMER
+call leds.top(32, 32,32)		# INITIALIZE LEDS
+##################################################################
+
+
+######################################################
+#		ONEVENT	[	PROX EVENT AND TIMER 0 EVENT	]		#
+######################################################
+
+onevent prox
+
+if state == WANDER then
+
+#####################################	
+## GROUND SENSORS DETECT BLACK LINE##
+#####################################
+
+if prox.ground.delta[0] &lt; THRESHOLD or
+ prox.ground.delta[1] &lt; THRESHOLD then
+ call leds.top(32, 0,0)
+if prox.ground.delta[0] &lt; THRESHOLD then
+# Left sensor, turn right
+motor.left.target = SPEED
+motor.right.target = -SPEED
+timer.period[0] = TURN_AMOUNT
+elseif prox.ground.delta[1] &lt; THRESHOLD then
+# Right sensor, turn left
+motor.left.target = -SPEED
+motor.right.target = SPEED
+timer.period[0] = TURN_AMOUNT -30 # -30, Why??
+end
+state = TURNING
+#call leds.top(0, 0, 32)
+end
+################################################
+## GROUND SENSORS DETECT BLACK LINE ENDS HERE ##
+################################################
+
+
+############################################
+##		 ROBOT FRONT SENSORS DETECT OBJECTS	##
+############################################
+
+if  prox.horizontal[0] > MAX_VIEW then
+call leds.top(0 , 0, 32 )
+if  prox.horizontal[0] > NEARVIEW then
+call leds.top(0, 32, 0)
+if prox.horizontal[0] > PERSPACE then
+call leds.top(32, 0, 0)
+# Left sensor, turn right
+motor.left.target = SPEED
+motor.right.target = -SPEED
+timer.period[0] = TURN_AMOUNT
+state = TURNING
+end
+end
+end
+
+
+if  prox.horizontal[1] > MAX_VIEW then
+call leds.top(0 , 0, 32 )
+if  prox.horizontal[1] > NEARVIEW then
+call leds.top(0, 32, 0)
+if prox.horizontal[1] > PERSPACE then
+call leds.top(32, 0, 0)
+# Left sensor, turn right
+motor.left.target = SPEED
+motor.right.target = -SPEED
+timer.period[0] = TURN_AMOUNT
+state = TURNING
+end
+end
+end
+
+if  prox.horizontal[2] > MAX_VIEW then
+call leds.top(0 , 0, 32 )
+if  prox.horizontal[2] > NEARVIEW then
+call leds.top(0, 32, 0)
+if prox.horizontal[2] > PERSPACE then
+call leds.top(32, 0, 0)
+# Left sensor, turn right
+motor.left.target = SPEED
+motor.right.target = -SPEED
+timer.period[0] = TURN_AMOUNT
+state = TURNING
+end
+end
+end
+
+
+if  prox.horizontal[3] > MAX_VIEW then
+call leds.top(0 , 0, 32 )
+if  prox.horizontal[3] > NEARVIEW then
+call leds.top(0, 32, 0)
+if prox.horizontal[3] > PERSPACE then
+call leds.top(32, 0, 0)
+# Right sensor, turn left
+motor.left.target = -SPEED
+motor.right.target = SPEED
+timer.period[0] = TURN_AMOUNT -30
+state = TURNING
+end
+end
+end
+
+
+if  prox.horizontal[4] > MAX_VIEW then
+call leds.top(0 , 0, 32 )
+if  prox.horizontal[4] > NEARVIEW then
+call leds.top(0, 32, 0)
+if prox.horizontal[4] > PERSPACE then
+call leds.top(32, 0, 0)
+# Right sensor, turn left
+motor.left.target = -SPEED
+motor.right.target = SPEED
+timer.period[0] = TURN_AMOUNT -30
+state = TURNING
+end
+end
+end
+
+#######################################
+## ROBOT FRONT SENSORS DETECT OBJECTS##
+######   		 ENDS HERE 			########
+#######################################
+
+NEAREST = prox.horizontal[0]
+for i in 1:4 do
+	if  prox.horizontal[i] > prox.horizontal[i - 1] then
+		NEAREST = prox.horizontal[i]
+		if  i ==0 then
+			# Left sensor, turn right
+	motor.left.target = SPEED
+	motor.right.target = -SPEED
+	timer.period[0] = TURN_AMOUNT + 60
+	state = TURNING
+		end
+		if  i == 1 then
+			# Left sensor, turn right
+	motor.left.target = SPEED
+	motor.right.target = -SPEED
+	timer.period[0] = TURN_AMOUNT + 30
+	state = TURNING
+		end		
+		if  i == 2 then
+			# Left sensor, turn right
+	motor.left.target = SPEED
+	motor.right.target = -SPEED
+	timer.period[0] = TURN_AMOUNT
+	state = TURNING
+		end		
+		if  i == 3 then
+	# Right sensor, turn left
+	motor.left.target = -SPEED
+	motor.right.target = SPEED
+	timer.period[0] = TURN_AMOUNT + 30
+	state = TURNING
+		end
+		if  i == 4 then
+	# Right sensor, turn left
+	motor.left.target = -SPEED
+	motor.right.target = SPEED
+	timer.period[0] = TURN_AMOUNT + 60
+	state = TURNING
+		end
+		end
+		end
+   end
+
+
+#############################################################
+# 		THYMIO SEARCHES FOR FLOCKMATES IF NO BARRIERS AROUND	##
+#############################################################
+if state == WANDER then							
+callsub RandText									
+timer.period[1] = SEARCH_DISTANCE			
+state = TURNING
+end													
+##############################################
+# 	THYMIO SEARCHES FOR FLOCKMATES	ENDS HERE ##
+##############################################
+
+return
+
+onevent timer1
+callsub Forward
+if state == TURNING then
+motor.left.target = SPEED
+motor.right.target = SPEED
+timer.period[1]= 0
+state = WANDER
+end
+
+return
+
+onevent timer0
+call leds.top(32, 0, 0)
+if state == TURNING then
+motor.left.target = SPEED
+motor.right.target = SPEED
+timer.period[0]=0
+state = WANDER
+call leds.top(32, 32, 32)
+end
+
+return
+
+# RANDOM LEFT RIGHT COMMAND
+sub RandText 
+call math.rand(i) # GENERATES RANDOM NUMER
+if  i > -1 then
+callsub TurnRight
+else 
+callsub TurnLeft
+	
+end
+return
+
+# TURN LEFT PROCEDURE
+sub TurnLeft
+motor.left.target = -SPEED
+motor.right.target = SPEED
+timer.period[0] = SEARCH_ANGLE
+return
+
+# TURN RIGHT PROCEDURE
+sub TurnRight
+motor.right.target = SPEED
+motor.right.target = -SPEED
+timer.period[0] = SEARCH_ANGLE
+#call leds.top(0,0,32)
+return
+
+# STOP PROCEDURE
+sub Stop
+motor.left.target = 0
+motor.right.target = 0
+timer.period[0] = 0
+return
+
+sub Forward
+motor.left.target = SPEED
+motor.right.target = SPEED
+timer.period[0] = SEARCH_DISTANCE
+return</node>
+
+
+</network>
